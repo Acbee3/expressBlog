@@ -1,0 +1,43 @@
+{{extend './layout/layout.html'}}
+{{block 'main'}}
+<section class="main">
+    <div class="article">
+        <h2 class="title">{{posts.title}}</h2>
+        {{@posts.content}}
+    </div>
+    <!-- 作者 -->
+    <div class="author">
+        <div class="avatar">
+            <a href="/center?id={{posts.uid}}">
+                <img onerror="this.src='/public/uploads/avatar/default.png'"
+                     src="{{posts.avatar||'/public/uploads/avatar/default.png'}}" alt="">
+            </a>
+        </div>
+        <div class="wrap-box">
+            <!-- 个人资料 -->
+            <div class="meta">
+                <h4 class="name">
+                    <a href="/center?id={{posts.uid}}">{{posts.name}}</a>
+                </h4>
+                <p class="intro">{{posts.alt}}</p>
+                <div class="extra">
+                    <span class="icon-location">{{posts.company}}</span>
+                    <span class="icon-link">
+                        <a href="{{posts.homepage}}">{{posts.homepage}}</a>
+                    </span>
+                    <span class="icon-twitter">
+                        <a href="javascript:;"> @tom</a>
+                    </span>
+                </div>
+            </div>
+            <!-- 社区 -->
+            <div class="social">
+                <h4>分享</h4>
+                <a href="javascript:;" class="icon-twitter"></a>
+                <a href="javascript:;" class="icon-facebook"></a>
+                <a href="javascript:;" class="icon-weibo"></a>
+            </div>
+        </div>
+    </div>
+</section>
+{{/block}}

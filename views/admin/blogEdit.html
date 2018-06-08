@@ -1,0 +1,74 @@
+{{extend './layout/layout.html'}}
+{{block 'bread'}}
+<li><a href="/admin">博客管理</a></li>
+<li class="active" data-cd="{{posts.id?'blogList':'blogAdd'}}">博客{{posts.id?'修改':'添加'}}</li>
+{{/block}}
+{{block 'content'}}
+<form class="form-horizontal">
+    {{if posts.id}}
+    <input id="id" type="hidden" value="{{posts.id}}">
+    {{/if}}
+    <div class="form-group">
+        <label for="title" class="col-xs-2 control-label">标题</label>
+        <div class="col-xs-8">
+            <input id="title" value="{{posts.title}}" name="title" type="text" class="form-control input-sm">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="brief" class="col-xs-2 control-label">摘要</label>
+        <div class="col-xs-8 ckeditor">
+            <textarea id="brief" name="brief" rows="5" class="form-control input-sm">{{posts.brief}}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="content" class="col-xs-2 control-label">内容</label>
+        <div class="col-xs-8">
+            <textarea id="content" name="content" class="form-control input-sm">{{posts.content}}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-10">
+            <a href="javascript:;" class="btn btn-success btn-sm pull-right">保 存</a>
+        </div>
+    </div>
+</form>
+{{/block}}
+{{block 'script'}}
+<script src="/node_modules/ckeditor/ckeditor.js"></script>
+<script>
+    var ckeditor = CKEDITOR.replace('content', {
+        toolbarGroups: [
+            {name: 'clipboard', groups: ['clipboard', 'undo']},
+            {name: 'forms'},
+            {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+            {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
+            {name: 'styles'},
+            {name: 'colors'}
+        ]
+    });
+    /*在表单序列化的时候无法获取文本域的内容*/
+    /*因为内容是富文本编辑器创建出来的*/
+    /*ckeditor.getData() 获取 ckeditor.setData() 文本内容*/
+    /*判断当前的操作类型*/
+    var isEdit = $('#id').length === 1;
+    $('.btn-success').on('click', function () {
+        $.ajax({
+            type: 'post',
+            url: isEdit ? '/admin/blog/edit' : '/admin/blog/push',
+            data: $.extend({
+                title: $('#title').val(),
+                brief: $('#brief').val(),
+                content: ckeditor.getData()
+            }, isEdit ? {id: $('#id').val()} : {}),
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    location.href = '/admin/blog/list';
+                } else {
+                    alert(data.msg);
+                }
+            }
+        });
+    });
+</script>
+{{/block}}

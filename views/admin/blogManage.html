@@ -1,0 +1,54 @@
+{{extend './layout/layout.html'}}
+{{block 'bread'}}
+<li><a href="/admin">博客管理</a></li>
+<li class="active" data-cd="blogList">博客列表</li>
+{{/block}}
+{{block 'content'}}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form action="javascript:;" autocomplete="off" class="form-inline">
+            <div class="input-group">
+                <input id="title" value="{{title}}" type="text" class="form-control input-sm">
+                <span class="input-group-btn">
+                    <button class="btn btn-success btn-sm">搜索</button>
+                </span>
+            </div>
+        </form>
+    </div>
+    <table class="table table-hover">
+        <tbody>
+        {{if rows.length}}
+        {{each rows}}
+        <tr>
+            <td width="60" align="center">{{$index+1}}</td>
+            <td align="left">
+                <a class="title" href="javascript:;">{{$value.title}}</a>
+            </td>
+            <td width="120" align="center">
+                <a href="/admin/blog/edit?id={{$value.id}}" class="btn btn-info btn-xs">编辑</a>
+                <a href="/admin/blog/del?id={{$value.id}}" class="btn btn-warning btn-xs">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+        {{else}}
+        <tr>
+            <td colspan="3">没有文章数据，您是否去<a href="/admin/blog/push">添加一篇</a></td>
+        </tr>
+        {{/if}}
+        </tbody>
+    </table>
+</div>
+{{/block}}
+{{block 'script'}}
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<script>
+    $('.btn-success').on('click', function () {
+        if ($('#title').val()) {
+            location.href = '/admin/blog/list?title=' + $('#title').val();
+        } else {
+            location.href = '/admin/blog/list';
+        }
+
+    })
+</script>
+{{/block}}

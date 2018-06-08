@@ -1,0 +1,43 @@
+{{extend './layout/layout.html'}}
+{{block 'main'}}
+<section class="main">
+    <!-- 博客文章 -->
+    {{each rows}}
+    <article class="post">
+        <!-- 标题 -->
+        <header class="post-title">
+            <a href="/article?id={{$value.id}}">{{$value.title}}</a>
+        </header>
+        <!-- 博客信息 -->
+        <div class="post-meta">
+            <img onerror="this.src='/public/uploads/avatar/default.png'"
+                 src="{{$value.avatar||'/public/uploads/avatar/default.png'}}" alt="">
+            <a href="/center?id={{$value.uid}}">{{$value.name}}</a>
+            <span>{{$imports.moment($value.time).format('YYYY-MM-DD HH:mm:ss')}}</span>
+        </div>
+        <!-- 博客概览 -->
+        <div class="post-brief">
+            <p>{{$value.brief}}</p>
+        </div>
+        <!-- 查看全文 -->
+        <a href="/article?id={{$value.id}}" class="read-more">查看全文</a>
+    </article>
+    {{/each}}
+    <!-- 分页 -->
+    {{if count}}
+    <div class="pagination">
+        {{if pageNow <= 1}}
+        <a href="javascript:;" class="prev disabled">← Newer Posts</a>
+        {{else}}
+        <a href="/?page={{+pageNow-1}}" class="prev">← Newer Posts</a>
+        {{/if}}
+        <span>Pages {{pageNow}} of {{pageCount}}</span>
+        {{if pageNow >= pageCount}}
+        <a href="javascript:;" class="next disabled">Older Posts →</a>
+        {{else}}
+        <a href="/?page={{+pageNow+1}}" class="next">Older Posts →</a>
+        {{/if}}
+    </div>
+    {{/if}}
+</section>
+{{/block}}

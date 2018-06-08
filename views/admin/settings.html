@@ -1,0 +1,99 @@
+{{extend './layout/layout.html'}}
+{{block 'bread'}}
+<li><a href="/admin">博客管理</a></li>
+<li class="active" data-cd="settings">个人设置</li>
+{{/block}}
+{{block 'content'}}
+<form class="form-horizontal">
+    <div class="form-group">
+        <label class="col-xs-3 control-label">头像</label>
+        <div class="col-xs-2 preview">
+            <img onerror="this.src='/public/uploads/avatar/default.png'"
+                 src="{{users.avatar||'/public/uploads/avatar/default.png'}}" alt="">
+            <input type="file" id="upfile">
+            <input type="hidden" name="avatar">
+            <div class="cover">
+                <i class="glyphicon glyphicon-upload"></i>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="name" class="col-xs-3 control-label">用户名</label>
+        <div class="col-xs-5">
+            <input type="text" id="name" value="{{users.name}}" name="name" class="form-control input-sm">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">性别</label>
+        <div class="col-xs-3">
+            <label class="radio-inline">
+                <input name="gender" value="0" type="radio" {{users.gender==0?'checked':''}}> 男
+            </label>
+            <label class="radio-inline">
+                <input name="gender" value="1" type="radio" {{users.gender==1?'checked':''}}> 女
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="phone" class="col-xs-3 control-label">手机号码</label>
+        <div class="col-xs-5">
+            <input type="text" id="phone" value="{{users.phone}}" name="phone" class="form-control input-sm">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="company" class="col-xs-3 control-label">就职公司</label>
+        <div class="col-xs-5">
+            <input type="text" id="company" value="{{users.company}}" name="company" class="form-control input-sm">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="homepage" class="col-xs-3 control-label">个人主页</label>
+        <div class="col-xs-5">
+            <input type="text" id="homepage" value="{{users.homepage}}" name="homepage" class="form-control input-sm">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="alt" class="col-xs-3 control-label">个性签名</label>
+        <div class="col-xs-5 ckeditor">
+            <textarea id="alt" name="alt" rows="5" class="form-control input-sm">{{users.alt}}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-8">
+            <a href="javascript:;" class="btn btn-success btn-sm pull-right">保 存</a>
+            <a href="/repass" class="btn btn-link btn-sm pull-right">更改密码？</a>
+        </div>
+    </div>
+</form>
+{{/block}}
+{{block 'script'}}
+<script>
+    $('#upfile').on('change', function () {
+        var file = this.files[0];
+        var formData = new FormData();
+        formData.append('avatar', file);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', '/admin/upload');
+        xhr.send(formData);
+        xhr.onload = function () {
+            $('form img').attr('src', xhr.responseText).siblings('[name="avatar"]').val(xhr.responseText);
+        }
+    });
+    $('.btn-success').on('click',function () {
+        $.ajax({
+            type: 'post',
+            url: '/admin/settings',
+            data: $('form').serialize(),
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    alert('个人设置成功');
+                } else {
+                    alert(data.msg);
+                }
+            }
+        });
+    });
+</script>
+{{/block}}
